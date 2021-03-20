@@ -22,7 +22,7 @@ server.applyMiddleware({
 
 app.listen(
   {
-    port: 4003
+    port: process.env.PORT || 3000
   },
   (t) => console.log(`🚀  Server ready at ${t}`)
 )
