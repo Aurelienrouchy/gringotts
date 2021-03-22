@@ -26,6 +26,11 @@ const TicketSchema = new Schema({
         type: String,
         required: true,
         trim: true,
+    },
+    progressColor: {
+        type: String,
+        required: true,
+        trim: true,
     }
 });
 

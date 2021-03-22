@@ -36,6 +36,7 @@ const typeDefs = gql`
 		maxCoins: Int
 		scratchableBeforeUnlock: Int
 		imageUrl: String
+		progressColor: String
 	}
 
 	type User {
