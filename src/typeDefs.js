@@ -36,6 +36,9 @@ const typeDefs = gql`
 		maxCoins: Int
 		scratchableBeforeUnlock: Int
 		imageUrl: String
+		imageLocalUri: String
+		imageFrontUrl: String
+		imageBackUrl: String
 		progressColor: String
 	}
 
