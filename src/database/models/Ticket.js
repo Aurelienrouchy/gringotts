@@ -22,7 +22,7 @@ const TicketSchema = new Schema({
         type: Number,
         required: true,
     },
-    imageLocalUri: {
+    imageUrl: {
         type: String,
         required: true,
         trim: true,
