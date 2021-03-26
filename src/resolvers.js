@@ -4,6 +4,7 @@ const axios = require('axios');
 const User = require('./database/models/User');
 const Ticket = require('./database/models/Ticket');
 const Loto = require('./database/models/Loto');
+const LotoTicket = require('./database/models/LotoTicket');
 
 const { authenticateFacebook, authenticateGoogle } = require('./helpers/passport');
 
@@ -62,6 +63,7 @@ const Query = {
 
 const Mutation = {
     loginOrRegister: async (_, { token, provider }, { req, res }) => {
+        console.log('pppp')
         req.body = {
             ...req.body,
             access_token: token,
@@ -72,8 +74,8 @@ const Mutation = {
             const profile = await result?.data?.profile;
 
             if (profile) {
-                const userFormDatabase = await User.findOne({ provider_id: profile.id });
-
+                const userFormDatabase = await User.findOne({ providerId: profile.id });
+                console.log('userFormDatabase',userFormDatabase)
                 if (!userFormDatabase) {
                     const userForRegister = {
                         firstname: profile._json.given_name,
@@ -97,6 +99,7 @@ const Mutation = {
             return Error('User not found');
 
         } catch (err) {
+            console.log(err)
             return Error(err);
         }
     },
@@ -116,11 +119,39 @@ const Mutation = {
             return Error(err.message);
         }
     },
-    updateAfterScratch: async (_, { input }) => {
+    // updateAfterScratch: async (_, { input }) => {
 
+    // },
+    setLoto: async (_, { input }) => {
+        try {
+            const loto = await Loto.create(input);
+            return loto;
+        } catch (err) {
+            return Error(err.message)
+        }
     },
     participateLoto: async (_, { input }) => {
+        try {
+            const { lotoId, userId, numbers, complementary } = input;
 
+            const loto = await Loto.findOne({ _id: lotoId });
+            if (!loto) {
+                return Error('Cannot find loto');
+            };
+            if (loto.lotoComplementary !== complementary && loto.lotoNumbers !== numbers) {
+                return Error('Not enough numbers');
+            }
+            console.log('loto',loto);
+            const ticket = await LotoTicket.create(input);
+            console.log('ticket', ticket);
+
+            loto.tickets = [...loto.tickets, ticket.id];
+
+            await loto.save();
+            
+        } catch (err) {
+            return Error(err.message);
+        }
     }
 };
 

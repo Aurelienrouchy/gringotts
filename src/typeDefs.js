@@ -24,9 +24,10 @@ const typeDefs = gql`
 		imageUrl: String
 		lotoNumbers: Int
 		lotoComplementary: Int
+		maxNumbers: Int
 		maxComplementary: Int
 		winner: ID
-		tickets: [ LotoTicket ]
+		tickets: [ ID ]
 	}
 
 	type Ticket {
@@ -52,22 +53,21 @@ const typeDefs = gql`
 		coins: Int
 		trees: Int
 		adsViews: Int
-		ticketsProgress: Int
+		experience: Int
 		lotos: [ LotoTicket ]!
 	}
 
-	input UpdateAfterScratchInput {
-		user_id: ID!
+	type ScratchNumbers {
+		numbers: [ Int ]!
 		coins: Int!
-		trees: Int
-		ticketsProgress: Int!
+
 	}
 
 	input ParticipateLotoInput {
-		lotoId: ID
-		userId: ID
-		numbers: [ Int ]
-        complementary: [ Int ]
+		lotoId: ID!
+		userId: ID!
+		numbers: [ Int ]!
+        complementary: [ Int ]!
 	}
 
 	input SetTicketInput {
@@ -76,6 +76,16 @@ const typeDefs = gql`
 		maxCoins: Int
 		scratchableBeforeUnlock: Int
 		imageUrl: String
+	}
+
+	input SetLotoInput {
+		title: String
+		cost: Int
+		imageUrl: String
+		lotoNumbers: Int
+		lotoComplementary: Int
+		maxNumbers: Int
+		maxComplementary: Int
 	}
 
 	type Query {
@@ -87,7 +97,8 @@ const typeDefs = gql`
 	type Mutation {
 		loginOrRegister(token: String!, provider: String!): User!
 		setTicket(input: SetTicketInput): Ticket!
-		updateAfterScratch(input: UpdateAfterScratchInput!): User!
+		setLoto(input: SetLotoInput): Loto!
+		getScratchNumbers(userId: String!, ticketId: ID): ScratchNumbers!
 		participateLoto(input: ParticipateLotoInput!): Loto!
 	}
 `;

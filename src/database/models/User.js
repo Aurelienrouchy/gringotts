@@ -43,7 +43,7 @@ const UserSchema = new Schema({
         required: true,
         default: 0
     },
-    ticketsProgress: {
+    experience: {
         type: Number,
         required: true,
         default: 0

@@ -38,8 +38,12 @@ const LotoSchema = new Schema({
     },
     winner: {
         type: Schema.Types.ObjectId,
+        default: null
     },
-    tickets: [ Schema.Types.ObjectId ]
+    tickets: {
+        type: [ Schema.Types.ObjectId ],
+        default: []
+    }
 });
 
 const Loto = model('loto', LotoSchema); 
