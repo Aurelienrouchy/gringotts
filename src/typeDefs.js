@@ -9,10 +9,10 @@ const typeDefs = gql`
 
 	type LotoTicket {
 		id: ID
-		createAt: Int
+		coins: Int
 		lotoId: ID
 		userId: ID
-		numbers: [ Int ]
+		classic: [ Int ]
         complementary: [ Int ]
 	}
 
@@ -21,13 +21,14 @@ const typeDefs = gql`
 		createAt: Int
 		title: String
 		cost: Int
+		timer: Int
 		imageUrl: String
 		lotoNumbers: Int
 		lotoComplementary: Int
 		maxNumbers: Int
 		maxComplementary: Int
 		winner: ID
-		tickets: [ ID ]
+		tickets: [ LotoTicket ]
 	}
 
 	type Ticket {
@@ -44,6 +45,7 @@ const typeDefs = gql`
 
 	type User {
 		id: ID
+		token: String
 		firstname: String
 		lastname: String
 		photoUrl: String
@@ -64,10 +66,10 @@ const typeDefs = gql`
 	}
 
 	input ParticipateLotoInput {
-		lotoId: ID!
-		userId: ID!
-		numbers: [ Int ]!
-        complementary: [ Int ]!
+		lotoId: ID
+		userId: ID
+		classic: [ Int ]
+        complementary: [ Int ]
 	}
 
 	input SetTicketInput {
@@ -81,6 +83,7 @@ const typeDefs = gql`
 	input SetLotoInput {
 		title: String
 		cost: Int
+		timer: Int
 		imageUrl: String
 		lotoNumbers: Int
 		lotoComplementary: Int
@@ -91,6 +94,7 @@ const typeDefs = gql`
 	type Query {
 		getTickets: [ Ticket! ]!
 		getLotos: [ Loto! ]!
+		getUserTickets(userId: String!): [ LotoTicket ]
 		getHistory: [ Loto ]
 	}
 	
@@ -99,7 +103,7 @@ const typeDefs = gql`
 		setTicket(input: SetTicketInput): Ticket!
 		setLoto(input: SetLotoInput): Loto!
 		getScratchNumbers(userId: String!, ticketId: ID): ScratchNumbers!
-		participateLoto(input: ParticipateLotoInput!): Loto!
+		participateLoto(input: ParticipateLotoInput!): LotoTicket!
 	}
 `;
 

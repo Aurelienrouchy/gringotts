@@ -15,6 +15,10 @@ const LotoSchema = new Schema({
         type: Number,
         required: true,
     },
+    timer: {
+        type: Number,
+        required: true,
+    },
     imageUrl: {
         type: String,
         required: true,

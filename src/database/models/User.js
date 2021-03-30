@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-// const jwt = require('jsonwebtoken');
+const jwt = require('jsonwebtoken');
 const { Schema, model } = mongoose;
 
 const UserSchema = new Schema({
@@ -48,18 +48,15 @@ const UserSchema = new Schema({
         required: true,
         default: 0
     },
-    lotos: [{
-        id: Number,
-        numbers: [Number],
-        complementary: [Number],
-        createAt: Date
-    }]
+    lotos: {
+        type: [ Schema.Types.ObjectId ],
+    }
 });
 
 // Model Methods
-// UserSchema.methods.generateJWT = (token) => {
-//     return jwt.sign({token}, process.env.JWT_KEY || 'Prout123')
-// };
+UserSchema.methods.generateJWT = (token) => {
+    return jwt.sign({token}, process.env.JWT_KEY || 'Prout123')
+};
 
 const User = model('user', UserSchema); 
 

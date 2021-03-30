@@ -1,5 +1,6 @@
 const express = require('express');
 const { ApolloServer } = require('apollo-server-express');
+const { getUserWithToken } = require('./src/database/utils');
 const cors = require('cors')
 require('./src/database');
 
@@ -11,20 +12,24 @@ const typeDefs = require('./src/typeDefs.js');
 const resolvers = require('./src/resolvers.js');
 
 const server = new ApolloServer({ 
-  typeDefs,
-  resolvers,
-  context: ({ req, res }) => ({ req, res }),
+    typeDefs,
+    resolvers,
+    context: async ({ req, res }) => {
+		const token = req.headers.authorization || '';		
+		const user = token && await getUserWithToken(token);
+		return { user, req, res }
+	},
 });
 
 server.applyMiddleware({
-  app
+    app
 })
 
 app.listen(
-  {
-    port: process.env.PORT || 3000
-  },
-  (t) => console.log(`🚀  Server ready at ${t}`)
+    {
+        port: process.env.PORT || 3000
+    },
+    (t) => console.log(`🚀  Server ready at ${t}`)
 )
 
   

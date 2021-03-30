@@ -14,7 +14,7 @@ const LotoTicketSchema = new Schema({
         type: Schema.Types.ObjectId,
         required: true
     },
-    numbers: {
+    classic: {
         type: [ Number ],
         required: true
     },
