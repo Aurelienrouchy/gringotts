@@ -60,7 +60,7 @@ const typeDefs = gql`
 	}
 
 	type ScratchNumbers {
-		numbers: [ Int ]!
+		numbers: [ Int ]
 		coins: Int!
 
 	}
@@ -102,7 +102,7 @@ const typeDefs = gql`
 		loginOrRegister(token: String!, provider: String!): User!
 		setTicket(input: SetTicketInput): Ticket!
 		setLoto(input: SetLotoInput): Loto!
-		getScratchNumbers(userId: String!, ticketId: ID): ScratchNumbers!
+		getScratchNumbers(ticketId: ID!): ScratchNumbers!
 		participateLoto(input: ParticipateLotoInput!): LotoTicket!
 	}
 `;

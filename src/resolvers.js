@@ -6,6 +6,7 @@ const Ticket = require('./database/models/Ticket');
 const Loto = require('./database/models/Loto');
 const LotoTicket = require('./database/models/LotoTicket');
 
+const { getRandomArbitrary } = require('./helpers/math')
 const { authenticateFacebook, authenticateGoogle } = require('./helpers/passport');
 
 const Query = {
@@ -130,9 +131,31 @@ const Mutation = {
             return Error(err.message);
         }
     },
-    // updateAfterScratch: async (_, { input }) => {
+    getScratchNumbers: async (_, { ticketId }, { user }) => {
+        if (!user) throw new AuthenticationError('you must be logged in');
 
-    // },
+        try {
+            const ticket = await Ticket.findById(ticketId);
+
+            if (user.experiences < ticket.scratchableBeforeUnlock) {
+                throw Error('No enouth exp')
+            }
+
+            const coins = Math.floor(getRandomArbitrary(ticket.minCoins, ticket.maxCoins));
+            await User.findOneAndUpdate(
+                { _id: user._id }, 
+                { $inc: { "coins": coins }, $inc: { "experiences": 10 }}
+            );
+            
+            return {
+                coins,
+                numbers: [1,2,3,4,5]
+            }
+
+        } catch (err) {
+            return Error(err.message)
+        }
+    },
     setLoto: async (_, { input }) => {
         try {
             const loto = await Loto.create(input);
@@ -143,10 +166,11 @@ const Mutation = {
     },
     participateLoto: async (_, { input }, ctx) => {
         if (!ctx.user) throw new AuthenticationError('you must be logged in');
+
         try {
             const { userId } = input;
 
-            const loto = Loto.findById(input.lotoId);
+            const loto = await Loto.findById(input.lotoId);
             if (!loto) {
                 return Error('No loto found')
             }
@@ -154,10 +178,10 @@ const Mutation = {
             const ticket = await LotoTicket.create(input);
             await User.findOneAndUpdate(
                 { _id: userId }, 
-                [{ $push: { lotos: ticket._id } }, { $subtract: { coins: loto.cost } }],
+                { $push: { "lotos": ticket._id }, $inc: { "coins": -loto.cost }}
             );
 
-            return {...ticket, coins: loto.cost}
+            return {...ticket._doc, coins: loto.cost}
             
         } catch (err) {
             return Error(err.message);
