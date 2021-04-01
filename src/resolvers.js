@@ -94,7 +94,8 @@ const Mutation = {
                         ticketsProgress: 0,
                         lotos: []
                     };
-                    const { _doc: newUser }  = await User.create(userForRegister);
+                    const newUser = await User.create(userForRegister);
+                    
                     return {
                         ...newUser._doc,
                         id: newUser._id,
