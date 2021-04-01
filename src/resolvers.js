@@ -165,24 +165,27 @@ const Mutation = {
             return Error(err.message)
         }
     },
-    participateLoto: async (_, { input }, ctx) => {
-        if (!ctx.user) throw new AuthenticationError('you must be logged in');
+    participateLoto: async (_, { input }, { user }) => {
+        if (!user) throw new AuthenticationError('you must be logged in');
 
         try {
             const { userId } = input;
-
+            
             const loto = await Loto.findById(input.lotoId);
             if (!loto) {
                 return Error('No loto found')
             }
-            
+
+            if (user.coins < loto.cost) {
+                return Error('No enouth coins')
+            }
             const ticket = await LotoTicket.create(input);
             await User.findOneAndUpdate(
                 { _id: userId }, 
                 { $push: { "lotos": ticket._id }, $inc: { "coins": -loto.cost }}
             );
-
-            return {...ticket._doc, coins: loto.cost}
+            
+            return {...ticket._doc, id: ticket._id, coins: loto.cost}
             
         } catch (err) {
             return Error(err.message);

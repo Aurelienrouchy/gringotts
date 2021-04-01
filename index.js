@@ -1,6 +1,7 @@
 const express = require('express');
 const { ApolloServer } = require('apollo-server-express');
 const { getUserWithToken } = require('./src/database/utils');
+const cron = require('node-cron');
 const cors = require('cors')
 require('./src/database');
 
@@ -10,6 +11,10 @@ app.use(cors())
 
 const typeDefs = require('./src/typeDefs.js');
 const resolvers = require('./src/resolvers.js');
+
+cron.schedule('45,46 * * * *', function() {
+    console.log('40 and 45');
+});
 
 const server = new ApolloServer({ 
     typeDefs,
